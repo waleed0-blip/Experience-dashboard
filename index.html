@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Products Checklist & Analytics Dashboard</title>
     
-    <!-- Native Presentation Presentation Compiler Dependency Engine -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
     
     <style>
@@ -29,10 +28,11 @@
             line-height: 1.5;
         }
 
-        /* PERFECT COMPONENT CENTERING FOR SECURITY GATE WINDOW */
+        /* PERFECTLY CENTERED MASTER LOGIN SCREEN STYLES */
         #masterAuthShield {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background-color: #5c3e35; display: flex; justify-content: center; align-items: center; z-index: 999999; color: white;
+            box-sizing: border-box;
         }
         .auth-card {
             background-color: white; color: #2b2b2b; padding: 40px; border-radius: 14px;
@@ -44,7 +44,7 @@
 
         .container { max-width: 1400px; margin: 0 auto; }
         header { text-align: center; border-bottom: 5px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 35px; }
-        header h1 { color: var(--primary-color); font-size: 2.4rem; text-transform: uppercase; margin: 0; font-weight: 800; outline: none; border: 1px solid transparent; }
+        header h1 { color: var(--primary-color); font-size: 2.4rem; text-transform: uppercase; margin: 0; font-weight: 800; outline: none; border: 1px dashed transparent; }
 
         .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
@@ -60,11 +60,15 @@
 
         .overall-view-panel, .analytics-section { background: #fff; border: 2px solid var(--primary-color); border-radius: 12px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto; }
         .section-title { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
-        .section-title span { outline: none; border: 1px solid transparent; }
+        .section-title span { outline: none; border: 1px dashed transparent; }
         
         .matrix-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
         .matrix-table th, .matrix-table td { border: 1px solid var(--border-color); padding: 10px 12px; vertical-align: middle; }
-        .matrix-table th { background-color: #f5f5f5; font-weight: bold; }
+        .matrix-table th { background-color: #f5f5f5; font-weight: bold; position: relative; }
+
+        /* MATRIX DELETE BUTTONS */
+        .matrix-del-col-btn { display: none; margin-left: 6px; background: var(--danger-color); color: white; border: none; border-radius: 4px; padding: 1px 6px; font-size: 0.75rem; cursor: pointer; font-weight: bold; }
+        .admin-unlocked .matrix-del-col-btn { display: inline-block; }
         
         .clickable-cell-trigger { cursor: pointer; text-decoration: underline; color: var(--primary-color); font-weight: bold; }
         .clickable-cell-trigger:hover { background-color: var(--accent-color); color: #111; }
@@ -123,6 +127,7 @@
         .summary-progress-bg { height: 6px; margin-top: 4px; }
         .progress-bar { background: var(--success-color); height: 100%; width: 0%; transition: width 0.4s; }
         .search-bar { padding: 10px 20px; width: 150px; border: 2px solid var(--border-color); border-radius: 25px; outline: none; }
+        .error-message { color: #d32f2f; font-size: 0.85rem; font-weight: bold; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -160,7 +165,7 @@
 
 <div class="container" id="captureArea" style="visibility: hidden;">
     <header>
-        <h1 id="globalMainHeadlineText">New Products Checklist & Analytics</h1>
+        <h1 id="globalMainHeadlineText" onblur="saveDOMChangesToArray()">New Products Checklist & Analytics</h1>
     </header>
 
     <div class="kpi-row">
@@ -184,7 +189,7 @@
 
     <div class="overall-view-panel">
         <div class="section-title">
-            <span id="headlineOverviewPanelText">📊 Overall Matrix Summary View</span>
+            <span id="headlineOverviewPanelText" onblur="saveDOMChangesToArray()">📊 Overall Matrix Summary View</span>
             <button class="admin-control-btn" onclick="addNewProductColumnChannel()">➕ Add Product Line</button>
         </div>
         <table class="matrix-table" id="matrixTableSummary">
@@ -195,7 +200,7 @@
 
     <div class="analytics-section" id="incidentsTableContainer">
         <div class="section-title">
-            <span id="headlineIncidentLogText">🚨 Technical Incident Capture Log</span>
+            <span id="headlineIncidentLogText" onblur="saveDOMChangesToArray()">🚨 Technical Incident Capture Log</span>
             <button class="log-btn" onclick="createNewIncidentRow()">➕ Log New Issue</button>
         </div>
         <table class="matrix-table" id="incidentLogTable">
@@ -362,20 +367,38 @@
     };
 
     const DEFAULT_INCIDENTS_DATA = [
-        { model: "Nova 15 Max", issue: "AI Remove option is not found in Gallery application framework[cite: 4]", date: "2026-06[cite: 4]", ref: "TM6202606150161[cite: 4]", action: "HQ Still Analyzing the captured software package behavior parameters[cite: 4]", status: "PENDING" },
-        { model: "Nova 15 Max", issue: "Camera screen layout flashes aggressively during photo snapshot capture execution[cite: 4]", date: "2026-05[cite: 4]", ref: "TM202605150178[cite: 4]", action: "HQ Analyzed and released technical support knowledge brief FAQ en-us16099942[cite: 4]", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "Viewfinder lags completely and zoom configurations freeze on aperture mode transitions[cite: 4]", date: "2026-05[cite: 4]", ref: "TM6202605190108[cite: 4]", action: "HQ verified. System software update EMUI 14.2.0.113 or subsequent versions fully resolves behavior[cite: 4]", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "Ana Vodafone workspace crashes instantly post deployment via AppGallery[cite: 4]", date: "2026-05[cite: 4]", ref: "TM202605120198[cite: 4]", action: "Caused by non-commercial engineering sample obtaining custom root privileges[cite: 4]", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "Android Auto validation parameters require cross-functional field status verification checks[cite: 4]", date: "2026-05[cite: 4]", ref: "TM6202605310059[cite: 4]", action: "On-site sample verified active and functional. Knowledge base guidance articles modified and approved[cite: 4]", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "VoWiFi configuration encounters audio cutouts and network dropping trends on Vodafone Egypt links[cite: 4]", date: "2026-06[cite: 4]", ref: "TM6202606160185[cite: 4]", action: "HQ engineering core groups actively parsing packet trace packages to identify routing gaps[cite: 4]", status: "PENDING" },
-        { model: "Mate 80 Pro", issue: "4K resolution video streams lag and stutter inside native Huawei Video App pathways[cite: 4]", date: "2026-05[cite: 4]", ref: "TM6202505210196", action: "VP9 decoding codec limit. Optimization coming within scheduled June 2026 software patch version[cite: 4]", status: "SOLVED" },
-        { model: "Mate 80 Pro", issue: "AI Composition baseline framing reference lines fail to render on baseline commercial builds[cite: 6]", date: "2026-03[cite: 6]", ref: "WeLink Escalated", action: "Resolved within EMUI 15.0.0.141 patch. Technical brief en-us16087529 distributed through internal mail channels[cite: 6]", status: "SOLVED" },
-        { model: "FreeBuds Pro 5", issue: "Acoustic layout leaks audible noise signals when operating at top 3 high volume levels[cite: 4, 6]", date: "2026-03[cite: 4, 6]", ref: "TM202603160216[cite: 4, 6]", action: "Expected fit threshold design. Users guided to choose a larger pair of ear tips and run fit test en-us15767422[cite: 4, 6]", status: "SOLVED" },
-        { model: "FreeBuds Pro 5", issue: "Huawei Sound parameters fail to activate when connected to legacy P30 Pro system profiles[cite: 4]", date: "2026-04[cite: 4]", ref: "TM202604260121[cite: 4]", action: "HQ development core teams still analyzing raw audio package translation logs[cite: 4]", status: "PENDING" },
-        { model: "FreeBuds Pro 5", issue: "Personalized prompt creation capabilities completely hidden inside global region accounts[cite: 4]", date: "2026-06[cite: 1, 4]", ref: "TM6202606150132[cite: 4]", action: "Feature restricted inside China mainland servers. Custom standalone global region FAQ has been requested[cite: 4]", status: "SOLVED" },
-        { model: "FreeBuds Pro 5", issue: "Broadcast signaling packets trigger random pairing popup box layers on third-party POCO X3[cite: 4]", date: "2026-06[cite: 4]", ref: "TM6202606150134[cite: 4]", action: "Derived from custom host phone background OS power policy rules. Basic earphone operations completely unhindered[cite: 4]", status: "SOLVED" },
-        { model: "Matepad Mini", issue: "Surface glass screen panel traps fingerprints and skin oils noticeably more than standard panels[cite: 4, 6]", date: "2026-04[cite: 4, 6]", ref: "WeLink Core", action: "Expected structural artifact of anti-glare PaperMatte micro-nano glass texturing processes[cite: 4, 6]", status: "SOLVED" }
+        { model: "Nova 15 Max", issue: "AI Remove option is not found in Gallery application framework", date: "2026-06", ref: "TM6202606150161", action: "HQ Still Analyzing the captured software package behavior parameters", status: "PENDING" },
+        { model: "Nova 15 Max", issue: "Camera screen layout flashes aggressively during photo snapshot capture execution", date: "2026-05", ref: "TM202605150178", action: "HQ Analyzed and released technical support knowledge brief FAQ en-us16099942", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Viewfinder lags completely and zoom configurations freeze on aperture mode transitions", date: "2026-05", ref: "TM6202605190108", action: "HQ verified. System software update EMUI 14.2.0.113 or subsequent versions fully resolves behavior", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Ana Vodafone workspace crashes instantly post deployment via AppGallery", date: "2026-05", ref: "TM202605120198", action: "Caused by non-commercial engineering sample obtaining custom root privileges", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Android Auto validation parameters require cross-functional field status verification checks", date: "2026-05", ref: "TM6202605310059", action: "On-site sample verified active and functional. Knowledge base guidance articles modified and approved", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "VoWiFi configuration encounters audio cutouts and network dropping trends on Vodafone Egypt links", date: "2026-06", ref: "TM6202606160185", action: "HQ engineering core groups actively parsing packet trace packages to identify routing gaps", status: "PENDING" },
+        { model: "Mate 80 Pro", issue: "4K resolution video streams lag and stutter inside native Huawei Video App pathways", date: "2026-05", ref: "TM6202605210196", action: "VP9 decoding codec limit. Optimization coming within scheduled June 2026 software patch version", status: "SOLVED" },
+        { model: "Mate 80 Pro", issue: "AI Composition baseline framing reference lines fail to render on baseline commercial builds", date: "2026-03", ref: "WeLink Escalated", action: "Resolved within EMUI 15.0.0.141 patch. Technical brief en-us16087529 distributed through internal mail channels", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Acoustic layout leaks audible noise signals when operating at top 3 high volume levels", date: "2026-03", ref: "TM202603160216", action: "Expected fit threshold design. Users guided to choose a larger pair of ear tips and run fit test en-us15767422", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Huawei Sound parameters fail to activate when connected to legacy P30 Pro system profiles", date: "2026-04", ref: "TM202604260121", action: "HQ development core teams still analyzing raw audio package translation logs", status: "PENDING" },
+        { model: "FreeBuds Pro 5", issue: "Personalized prompt creation capabilities completely hidden inside global region accounts", date: "2026-06", ref: "TM6202606150132", action: "Feature restricted inside China mainland servers. Custom standalone global region FAQ has been requested", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Broadcast signaling packets trigger random pairing popup box layers on third-party POCO X3", date: "2026-06", ref: "TM6202606150134", action: "Derived from custom host phone background OS power policy rules. Basic earphone operations completely unhindered", status: "SOLVED" },
+        { model: "Matepad Mini", issue: "Surface glass screen panel traps fingerprints and skin oils noticeably more than standard panels", date: "2026-04", ref: "WeLink Core", action: "Expected structural artifact of anti-glare PaperMatte micro-nano glass texturing processes", status: "SOLVED" }
     ];
+
+    function handleMasterAuthCheck() {
+        const inputVal = document.getElementById('masterGateKeyInput').value;
+        if (inputVal === SITE_ENTRY_PASSWORD) {
+            document.getElementById('masterAuthShield').style.display = 'none';
+            document.getElementById('captureArea').style.visibility = 'visible'; 
+            
+            fetchCloudState().then(() => {
+                applyHeadlineStateToDOM();
+                rebuildSummaryTableMarkupStructures();
+                renderMatrixDashboardGrid();
+                calculateDynamicKPIs();
+            });
+        } else {
+            document.getElementById('authErrorNode').style.display = 'block';
+            document.getElementById('masterGateKeyInput').value = '';
+        }
+    }
 
     function applyHeadlineStateToDOM() {
         document.getElementById('globalMainHeadlineText').innerText = globalHeadlinesDataset.main;
@@ -390,7 +413,7 @@
 
         let headerHTML = `<tr><th>Template Category</th>`;
         Object.keys(activeStateDataset).forEach(id => {
-            headerHTML += `<th>${activeStateDataset[id].title}</th>`;
+            headerHTML += `<th>${activeStateDataset[id].title} <button class="matrix-del-col-btn" onclick="removeProductColumnChannel('${id}')">✕</button></th>`;
         });
         headerHTML += `</tr>`;
         thead.innerHTML = headerHTML;
@@ -428,9 +451,11 @@
         let targetLabel = "Project Scope Issues";
         
         if (currentActiveFilterId !== "") {
-            const modelText = activeStateDataset[currentActiveFilterId].title;
-            filteredIncidents = incidentLogDataset.filter(i => i.model.toLowerCase().includes(modelText.toLowerCase()));
-            targetLabel = `${modelText} Captured Issues`;
+            if(activeStateDataset[currentActiveFilterId]) {
+                const modelText = activeStateDataset[currentActiveFilterId].title;
+                filteredIncidents = incidentLogDataset.filter(i => i.model.toLowerCase().includes(modelText.toLowerCase()));
+                targetLabel = `${modelText} Captured Issues`;
+            }
         }
 
         let pendingCount = 0; let solvedCount = 0;
@@ -483,7 +508,7 @@
         let targetedArray = incidentLogDataset;
         let titleLabel = "Full Project Captured Issues History";
 
-        if (currentActiveFilterId !== "") {
+        if (currentActiveFilterId !== "" && activeStateDataset[currentActiveFilterId]) {
             const modelText = activeStateDataset[currentActiveFilterId].title;
             targetedArray = incidentLogDataset.filter(i => i.model.toLowerCase().includes(modelText.toLowerCase()));
             titleLabel = `${modelText} Filtered Metrics Allocation`;
@@ -535,6 +560,7 @@
         
         rebuildSummaryTableMarkupStructures();
         renderMatrixDashboardGrid();
+        calculateDynamicKPIs();
         syncCloudChannel("checklist", activeStateDataset);
     }
 
@@ -636,9 +662,8 @@
         }
     }
 
-    // FIXED NATIVE SAVE EXCLUSION LOOP: PREVENTS ELEMENT COLLISIONS
+    // SAFE EXCLUSION SAVE ENGINE: STOPS INFINITE ELEMENT DUMP LOOPS
     function saveDOMChangesToArray() {
-        // Safe independent fetch paths for global headlines
         const mainNode = document.getElementById('globalMainHeadlineText');
         const overviewNode = document.getElementById('headlineOverviewPanelText');
         const logNode = document.getElementById('headlineIncidentLogText');
@@ -649,7 +674,6 @@
         
         localStorage.setItem('operations_headlines_storage', JSON.stringify(globalHeadlinesDataset));
 
-        // Isolate matrix loop maps strictly to structural product cards
         document.querySelectorAll('.product-column').forEach(col => {
             const id = col.getAttribute('data-id');
             if (!activeStateDataset[id]) return;
@@ -684,9 +708,12 @@
             saveDOMChangesToArray(); 
             btn.textContent = "🔒 Unlock Admin Edit"; 
             document.body.classList.remove('admin-unlocked', 'editable-active'); 
-            rebuildSummaryTableMarkupStructures(); 
-            renderMatrixDashboardGrid();
         }
+        
+        // Safety Refactor Sequence: Re-render table structures cleanly with no input parameters left active
+        rebuildSummaryTableMarkupStructures(); 
+        renderMatrixDashboardGrid();
+        calculateDynamicKPIs();
         toggleLiveEditDOMSync();
     }
 
@@ -703,7 +730,7 @@
         const sections = ['key', 'app', 'prev'];
         Object.keys(activeStateDataset).forEach(prodId => {
             sections.forEach(sec => {
-                if (activeStateDataset[prodId][sec]) {
+                if (activeStateDataset[prodId] && activeStateDataset[prodId][sec]) {
                     const total = activeStateDataset[prodId][sec].length;
                     const checked = activeStateDataset[prodId][sec].filter(i => i.checked).length;
                     totalMaster += total; checkedMaster += checked;
@@ -755,30 +782,6 @@
                 if(json.data.incidents && json.data.incidents.length > 0) incidentLogDataset = json.data.incidents;
             }
         } catch(e) { console.log("Cloud Read Error:", e); }
-    }
-
-    function createNewIncidentRow() {
-        incidentLogDataset.push({ model: "New Product Model", issue: "Describe issue details...", date: "2026-06", ref: "Ref ID", action: "HQ action roadmap...", status: "PENDING" });
-        calculateDynamicKPIs();
-        syncCloudChannel("incidents", incidentLogDataset);
-    }
-
-    function updateIncidentStatus(select, globalIdx) {
-        incidentLogDataset[globalIdx].status = select.value;
-        calculateDynamicKPIs();
-        syncCloudChannel("incidents", incidentLogDataset);
-    }
-
-    function enforceIncidentCellEdits() {
-        document.querySelectorAll('.inc-cell').forEach(cell => {
-            cell.setAttribute('contenteditable', 'true');
-            cell.onblur = function() {
-                const idx = this.getAttribute('data-idx');
-                const field = this.getAttribute('data-field');
-                incidentLogDataset[idx][field] = this.innerText.trim();
-                syncCloudChannel("incidents", incidentLogDataset);
-            };
-        });
     }
 
     function exportToCSVFile() {
