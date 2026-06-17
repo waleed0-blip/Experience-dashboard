@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Products Checklist & Analytics Dashboard</title>
     
+    <!-- Native Presentation Compiler Dependency Engine -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
     
     <style>
@@ -28,17 +29,18 @@
             line-height: 1.5;
         }
 
-        /* ABSOLUTE DEAD-CENTER PORTAL GATE CONTAINER */
+        /* PERFECTLY CENTERED PORTAL GATE STYLES */
         #masterAuthShield {
             position: fixed; 
             top: 0; left: 0; 
-            width: 100%; height: 100%;
+            width: 100vw; height: 100vh;
             background-color: #5c3e35; 
             display: flex; 
             justify-content: center; 
             align-items: center; 
             z-index: 999999; 
             color: white;
+            box-sizing: border-box;
         }
 
         .auth-card {
@@ -50,6 +52,7 @@
             text-align: center; 
             max-width: 400px; 
             width: 90%;
+            margin: auto;
         }
 
         .auth-card h2 { margin-top: 0; color: #5c3e35; font-size: 1.6rem; text-transform: uppercase; letter-spacing: 1px; }
@@ -188,6 +191,7 @@
         <h1>New Products Checklist & Analytics</h1>
     </header>
 
+    <!-- LIVE METRIC COUNTERS FOR MANAGER -->
     <div class="kpi-row">
         <div class="kpi-card interactive-metric" onclick="triggerKpiFilterModal('TOTAL')" title="Click to pop out full issue history">
             <h3 id="kpiScopeLabel">Project Scope Issues</h3>
@@ -207,19 +211,19 @@
         </div>
     </div>
 
+    <!-- SUMMARY MATRIX PANEL -->
     <div class="overall-view-panel">
         <div class="section-title">
             <span>📊 Overall Matrix Summary View</span>
             <button class="admin-control-btn" onclick="addNewProductColumnChannel()">➕ Add Product Line</button>
         </div>
         <table class="matrix-table" id="matrixTableSummary">
-            <thead id="summaryTableHeaderTarget">
-                </thead>
-            <tbody id="summaryTableBodyTarget">
-                </tbody>
+            <thead id="summaryTableHeaderTarget"></thead>
+            <tbody id="summaryTableBodyTarget"></tbody>
         </table>
     </div>
 
+    <!-- LIVE INCIDENT LOG TABLE -->
     <div class="analytics-section" id="incidentsTableContainer">
         <div class="section-title">
             <span>🚨 Technical Incident Capture Log</span>
@@ -240,9 +244,9 @@
         </table>
     </div>
 
+    <!-- Dashboard Toolbar Controls -->
     <div class="dashboard-controls">
-        <div class="tabs" id="filterTabGroup">
-            </div>
+        <div class="tabs" id="filterTabGroup"></div>
         <div class="right-controls">
             <button class="edit-toggle-btn" id="editModeBtn" onclick="toggleLiveEdit()">🔒 Unlock Admin Edit</button>
             <input type="text" id="dashboardSearch" class="search-bar" placeholder="Search parameters..." oninput="executeSearch()">
@@ -271,23 +275,20 @@
     const SITE_ENTRY_PASSWORD = "1234512345"; 
     const ADMIN_EDIT_PASSWORD = "1234";       
     
-    // ==========================================
-    // CRITICAL DATABASE PIPELINE CONFIGURATION
-    // ==========================================
     const CLOUD_DATABASE_URL = "https://script.google.com/macros/s/AKfycbyzuQxBW3kW9nOhI5Kb6kG9Hjgua-OFPdhuq2DfmySC3AsKk-qXQNPcYFnTlzoeyA-1ZQ/exec"; 
 
     let editMode = false;
     let currentActiveFilterId = "";
 
-    // FULL COMPREHENSIVE DATA EXTRACTION RECONSTRUCTED FROM REPORT IMAGES AND TEXT
+    // FULL COMPREHENSIVE DATA EXTRACTION RECONSTRUCTED FROM image_96289a.png AND REPORT DATA
     const DEFAULT_CHECKLIST_DATA = {
         mate80: {
-            title: "Mate 80 Pro", script: "done", [cite: 5, 29, 39]
+            title: "Mate 80 Pro", script: "done",
             key: [
-                { text: "Android Auto installation Guide. (en-us16002773)", checked: false }, [cite: 758]
+                { text: "Android Auto installation Guide. (en-us16002773)", checked: false },
                 { text: "Overheating during heavy Usage (For 1 Hours).", checked: false },
-                { text: "Ai Composition Feature in Camera.", checked: false }, [cite: 748, 756]
-                { text: "AI features for the device (en-us16086415).", checked: false }, [cite: 453]
+                { text: "Ai Composition Feature in Camera.", checked: false },
+                { text: "AI features for the device (en-us16086415).", checked: false },
                 { text: "Speaker Sound Quality.", checked: false },
                 { text: "Battery Draining fast in normal use.", checked: false }
             ],
@@ -308,7 +309,7 @@
             ]
         },
         matepad: {
-            title: "Matepad Pro Max", script: "done", [cite: 11]
+            title: "Matepad Pro Max", script: "done",
             key: [
                 { text: "Inaccurate GPS/Location on Huawei Tablets. (en-us16078162)", checked: false },
                 { text: "Overheating during heavy Usage (For 1 Hours using go paint and Huawei notes).", checked: false },
@@ -361,7 +362,7 @@
             prev: []
         },
         nova15: {
-            title: "Nova 15 Max", script: "done", [cite: 18, 22]
+            title: "Nova 15 Max", script: "done",
             key: [
                 { text: "Android Auto installation Guide. (en-us16002773)", checked: false },
                 { text: "Overheating during heavy Usage (For 1 Hours).", checked: false },
@@ -388,46 +389,26 @@
     };
 
     const DEFAULT_INCIDENTS_DATA = [
-        { model: "Nova 15 Max", issue: "AI Remove option is not found in Gallery application context sheets", date: "2026-06", ref: "TM6202606150161", action: "HQ Still Analyzing the captured engineering logs and use patterns", status: "PENDING" }, [cite: 26]
-        { model: "Nova 15 Max", issue: "Camera screen layout flashes aggressively during active photo capturing bursts", date: "2026-05", ref: "TM202605150178", action: "HQ Analyzed the issue and successfully released baseline customer guidance FAQ en-us16099942", status: "SOLVED" }, [cite: 26]
-        { model: "Nova 15 Max", issue: "Camera viewfinder locks up and zoom parameters freeze on aperture swaps", date: "2026-05", ref: "TM6202605190108", action: "Software fix verified. System upgrade to EMUI 14.2.0.113 or subsequent versions fully resolves behavior", status: "SOLVED" }, [cite: 26]
-        { model: "Nova 15 Max", issue: "Ana Vodafone workspace crashes instantly post AppGallery deployment cycles", date: "2026-05", ref: "TM202605120198", action: "Isolated to engineering prototypes obtaining internal root privileges. Production build clear", status: "SOLVED" }, [cite: 26]
-        { model: "Nova 15 Max", issue: "VoWiFi configuration encounters call drops and stability glitches over Vodafone hubs", date: "2026-06", ref: "TM6202606160185", action: "HQ engineering team still testing localized packet drops across Egyptian telecommunications links", status: "PENDING" }, [cite: 26]
-        { model: "Mate 80 Pro", issue: "4K video streams stutter when utilizing native Huawei Video App pathways", date: "2026-05", ref: "TM6202605210196", action: "VP9 hardware decoding layout codec limit. Optimization coming inside subsequent June 2026 update", status: "SOLVED" }, [cite: 89, 95]
-        { model: "Mate 80 Pro", issue: "AI Composition positioning lines fail to render on baseline software builds", date: "2026-03", ref: "WeLink Internal", action: "Resolved inside EMUI 15.0.0.141. Detailed support knowledge matrix en-us16087529 distributed", status: "SOLVED" }, [cite: 748, 756, 758]
-        { model: "Matepad Mini", issue: "PaperMatte display screen glass tracks oils and fingerprint smudges easily", date: "2026-04", ref: "WeLink Shared", action: "Normal design behavior of nano-etched anti-glare coatings. Standard customer script provided", status: "SOLVED" } [cite: 292, 298]
+        { model: "Nova 15 Max", issue: "AI Remove option is not found in Gallery application framework", date: "2026-06", ref: "TM6202606150161", action: "HQ Still Analyzing the captured engineering logs and use patterns", status: "PENDING" },
+        { model: "Nova 15 Max", issue: "Camera screen layout flashes aggressively during active photo capturing bursts", date: "2026-05", ref: "TM202605150178", action: "HQ Analyzed the issue and successfully released baseline customer guidance FAQ en-us16099942", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Camera viewfinder locks up and zoom parameters freeze on aperture swaps", date: "2026-05", ref: "TM6202605190108", action: "Software fix verified. System upgrade to EMUI 14.2.0.113 or subsequent versions fully resolves behavior", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Ana Vodafone workspace crashes instantly post AppGallery deployment cycles", date: "2026-05", ref: "TM202605120198", action: "Isolated to engineering prototypes obtaining internal root privileges. Production build clear", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "VoWiFi configuration encounters call drops and stability glitches over Vodafone hubs", date: "2026-06", ref: "TM6202606160185", action: "HQ engineering team still testing localized packet drops across Egyptian telecommunications links", status: "PENDING" },
+        { model: "Mate 80 Pro", issue: "4K video streams stutter when utilizing native Huawei Video App pathways", date: "2026-05", ref: "TM6202605210196", action: "VP9 hardware decoding layout codec limit. Optimization coming inside subsequent June 2026 update", status: "SOLVED" },
+        { model: "Mate 80 Pro", issue: "AI Composition positioning lines fail to render on baseline software builds", date: "2026-03", ref: "WeLink Internal", action: "Resolved inside EMUI 15.0.0.141. Detailed support knowledge matrix en-us16087529 distributed", status: "SOLVED" },
+        { model: "Matepad Mini", issue: "PaperMatte display screen glass tracks oils and fingerprint smudges easily", date: "2026-04", ref: "WeLink Shared", action: "Normal design behavior of nano-etched anti-glare coatings. Standard customer script provided", status: "SOLVED" }
     ];
 
     let activeStateDataset = DEFAULT_CHECKLIST_DATA;
     let incidentLogDataset = DEFAULT_INCIDENTS_DATA;
-
-    async function fetchCloudState() {
-        if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
-        try {
-            let res = await fetch(CLOUD_DATABASE_URL);
-            let json = await res.json();
-            if(json.status === "success" && json.data) {
-                if(json.data.checklist) activeStateDataset = json.data.checklist;
-                if(json.data.incidents && json.data.incidents.length > 0) incidentLogDataset = json.data.incidents;
-            }
-        } catch(e) { console.log("Cloud Read Error:", e); }
-    }
-
-    async function syncCloudChannel(type, payloadData) {
-        if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
-        try {
-            await fetch(CLOUD_DATABASE_URL, {
-                method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataType: type, payload: payloadData })
-            });
-        } catch(e) { console.log("Cloud Push Error:", e); }
-    }
 
     function handleMasterAuthCheck() {
         const inputVal = document.getElementById('masterGateKeyInput').value;
         if (inputVal === SITE_ENTRY_PASSWORD) {
             document.getElementById('masterAuthShield').style.display = 'none';
             document.getElementById('captureArea').style.visibility = 'visible'; 
+            
+            // Rebuild structural HTML frames cleanly on entry launch thread
             fetchCloudState().then(() => {
                 rebuildSummaryTableMarkupStructures();
                 renderMatrixDashboardGrid();
@@ -439,7 +420,6 @@
         }
     }
 
-    // DYNAMIC COLUMN GENERATION: REBUILDS TOP SUMMARY INTERFACE WHEN COLUMNS CHANGE
     function rebuildSummaryTableMarkupStructures() {
         const thead = document.getElementById('summaryTableHeaderTarget');
         const tbody = document.getElementById('summaryTableBodyTarget');
@@ -472,7 +452,6 @@
         `;
         tbody.innerHTML = bodyHTML;
 
-        // Rebuild filtering tabs
         const tabsBox = document.getElementById('filterTabGroup');
         let tabsHTML = `<button class="tab-btn ${currentActiveFilterId===''?'active':''}" onclick="switchProductFilter('')">Show All</button>`;
         Object.keys(activeStateDataset).forEach(id => {
@@ -559,7 +538,13 @@
         } else {
             targetedArray.forEach(inc => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<td><strong>${inc.model}</strong></td><td>${inc.issue}</td><td><span class="doc-id">${inc.date}</span></td><td><span class="doc-id">${inc.ref}</span></td><td><span class="status-badge-inline ${inc.status === 'SOLVED' ? 'status-done':'status-pending'}">${inc.status}</span></td>`;
+                tr.innerHTML = `
+                    <td><strong>${inc.model}</strong></td>
+                    <td>${inc.issue}</td>
+                    <td><span class="doc-id">${inc.date}</span></td>
+                    <td><span class="doc-id">${inc.ref}</span></td>
+                    <td><span class="status-badge-inline ${inc.status === 'SOLVED' ? 'status-done':'status-pending'}">${inc.status}</span></td>
+                `;
                 modalBody.appendChild(tr);
             });
         }
@@ -765,6 +750,28 @@
         if (format === 'pdf') { window.print(); } 
         else if (format === 'excel') { exportToCSVFile(); }
         else if (format === 'ppt') { generateComprehensivePresentationDeck(); }
+    }
+
+    async function fetchCloudState() {
+        if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
+        try {
+            let res = await fetch(CLOUD_DATABASE_URL);
+            let json = await res.json();
+            if(json.status === "success" && json.data) {
+                if(json.data.checklist) activeStateDataset = json.data.checklist;
+                if(json.data.incidents && json.data.incidents.length > 0) incidentLogDataset = json.data.incidents;
+            }
+        } catch(e) { console.log("Cloud Read Error:", e); }
+    }
+
+    async function syncCloudChannel(type, payloadData) {
+        if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
+        try {
+            await fetch(CLOUD_DATABASE_URL, {
+                method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ dataType: type, payload: payloadData })
+            });
+        } catch(e) { console.log("Cloud Push Error:", e); }
     }
 
     function exportToCSVFile() {
