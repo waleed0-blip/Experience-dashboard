@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Products Checklist & Analytics Dashboard</title>
     
-    <!-- Native Presentation Compiler Dependency Engine -->
+    <!-- Native Presentation Presentation Compiler Dependency Engine -->
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/PptxGenJS@3.12.0/dist/pptxgen.bundle.js"></script>
     
     <style>
@@ -29,7 +29,7 @@
             line-height: 1.5;
         }
 
-        /* PERFECTLY CENTERED PORTAL GATE STYLES */
+        /* PERFECTLY CENTERED MASTER LOGIN SCREEN STYLES */
         #masterAuthShield {
             position: fixed; 
             top: 0; left: 0; 
@@ -63,7 +63,7 @@
 
         .container { max-width: 1400px; margin: 0 auto; }
         header { text-align: center; border-bottom: 5px solid var(--primary-color); padding-bottom: 15px; margin-bottom: 35px; }
-        header h1 { color: var(--primary-color); font-size: 2.4rem; text-transform: uppercase; margin: 0; font-weight: 800; }
+        header h1 { color: var(--primary-color); font-size: 2.4rem; text-transform: uppercase; margin: 0; font-weight: 800; outline: none; }
 
         .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .kpi-card { background: #fff; border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.02); transition: transform 0.2s, box-shadow 0.2s; }
@@ -87,7 +87,8 @@
             background: #fff; border: 2px solid var(--primary-color); border-radius: 12px; padding: 20px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto;
         }
 
-        .section-title { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center;}
+        .section-title { font-size: 1.2rem; font-weight: bold; color: var(--primary-color); margin-bottom: 15px; text-transform: uppercase; border-bottom: 2px solid #eee; padding-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+        .section-title span { outline: none; }
         
         .matrix-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
         .matrix-table th, .matrix-table td { border: 1px solid var(--border-color); padding: 10px 12px; vertical-align: middle; }
@@ -117,7 +118,7 @@
         .matrix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 25px; margin-top: 25px; }
         .product-column { background: var(--card-bg); border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border-color); overflow: hidden; display: flex; flex-direction: column; }
         .product-column-header-wrap { position: relative; }
-        .product-title-node { background-color: var(--accent-color); padding: 18px; font-size: 1.3rem; font-weight: 700; text-align: center; border-bottom: 1px solid var(--border-color); }
+        .product-title-node { background-color: var(--accent-color); padding: 18px; font-size: 1.3rem; font-weight: 700; text-align: center; border-bottom: 1px solid var(--border-color); outline: none; }
         
         .remove-column-btn { display: none; position: absolute; top: 15px; right: 15px; background: var(--danger-color); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-weight: bold; cursor: pointer; font-size: 0.8rem; z-index: 10; }
         .admin-unlocked .remove-column-btn { display: flex; justify-content: center; align-items: center; }
@@ -139,7 +140,14 @@
         .node-item input[type="checkbox"] { margin-top: 4px; width: 15px; height: 15px; accent-color: var(--success-color); }
         .node-text { flex-grow: 1; outline: none; padding-right: 20px; }
         
-        .editable-active .node-text, .editable-active .product-title-node { border: 1px dashed var(--warning-color) !important; background-color: #fffde7; }
+        .editable-active .node-text, 
+        .editable-active .product-title-node, 
+        .editable-active header h1, 
+        .editable-active .section-title span { 
+            border: 1px dashed var(--warning-color) !important; 
+            background-color: #fffde7; 
+        }
+        
         .delete-node-btn, .add-node-btn { display: none; }
         .admin-unlocked .delete-node-btn { display: block; background: none; border: none; color: var(--danger-color); cursor: pointer; position: absolute; right: 4px; font-weight: bold; }
         .admin-unlocked .add-node-btn { display: block; background: none; border: 1px dashed var(--warning-color); color: var(--warning-color); padding: 5px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-top: 6px; text-align: center; }
@@ -150,7 +158,6 @@
         .summary-progress-bg { height: 6px; margin-top: 4px; }
         .progress-bar { background: var(--success-color); height: 100%; width: 0%; transition: width 0.4s; }
         .search-bar { padding: 10px 20px; width: 150px; border: 2px solid var(--border-color); border-radius: 25px; outline: none; }
-        .error-message { color: #d32f2f; font-size: 0.85rem; font-weight: bold; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -188,7 +195,8 @@
 
 <div class="container" id="captureArea" style="visibility: hidden;">
     <header>
-        <h1>New Products Checklist & Analytics</h1>
+        <!-- TEXT EDITABLE HEADLINE LAYER LOCKED TO ADMIN -->
+        <h1 id="globalMainHeadlineText" onblur="saveCurrentDOMToStateDataset()">New Products Checklist & Analytics</h1>
     </header>
 
     <!-- LIVE METRIC COUNTERS FOR MANAGER -->
@@ -214,7 +222,7 @@
     <!-- SUMMARY MATRIX PANEL -->
     <div class="overall-view-panel">
         <div class="section-title">
-            <span>📊 Overall Matrix Summary View</span>
+            <span id="headlineOverviewPanelText" onblur="saveCurrentDOMToStateDataset()">📊 Overall Matrix Summary View</span>
             <button class="admin-control-btn" onclick="addNewProductColumnChannel()">➕ Add Product Line</button>
         </div>
         <table class="matrix-table" id="matrixTableSummary">
@@ -226,7 +234,7 @@
     <!-- LIVE INCIDENT LOG TABLE -->
     <div class="analytics-section" id="incidentsTableContainer">
         <div class="section-title">
-            <span>🚨 Technical Incident Capture Log</span>
+            <span id="headlineIncidentLogText" onblur="saveCurrentDOMToStateDataset()">🚨 Technical Incident Capture Log</span>
             <button class="log-btn" onclick="createNewIncidentRow()">➕ Log New Issue</button>
         </div>
         <table class="matrix-table" id="incidentLogTable">
@@ -275,12 +283,19 @@
     const SITE_ENTRY_PASSWORD = "1234512345"; 
     const ADMIN_EDIT_PASSWORD = "1234";       
     
+    // Paste your Google Web App script URL here:
     const CLOUD_DATABASE_URL = "https://script.google.com/macros/s/AKfycbyzuQxBW3kW9nOhI5Kb6kG9Hjgua-OFPdhuq2DfmySC3AsKk-qXQNPcYFnTlzoeyA-1ZQ/exec"; 
 
     let editMode = false;
     let currentActiveFilterId = "";
 
-    // FULL COMPREHENSIVE DATA EXTRACTION RECONSTRUCTED FROM image_96289a.png AND REPORT DATA
+    // STRUCTURING FALLBACK CUSTOM BACKEND OBJECT CONFIGURATIONS
+    let globalHeadlinesDataset = {
+        main: "New Products Checklist & Analytics",
+        overview: "📊 Overall Matrix Summary View",
+        log: "🚨 Technical Incident Capture Log"
+    };
+
     const DEFAULT_CHECKLIST_DATA = {
         mate80: {
             title: "Mate 80 Pro", script: "done",
@@ -388,15 +403,20 @@
         }
     };
 
+    // NATIVE POPULATION: INCORPORATES 100% OF EXTRACTED REPORT DATA TRACES
     const DEFAULT_INCIDENTS_DATA = [
-        { model: "Nova 15 Max", issue: "AI Remove option is not found in Gallery application framework", date: "2026-06", ref: "TM6202606150161", action: "HQ Still Analyzing the captured engineering logs and use patterns", status: "PENDING" },
-        { model: "Nova 15 Max", issue: "Camera screen layout flashes aggressively during active photo capturing bursts", date: "2026-05", ref: "TM202605150178", action: "HQ Analyzed the issue and successfully released baseline customer guidance FAQ en-us16099942", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "Camera viewfinder locks up and zoom parameters freeze on aperture swaps", date: "2026-05", ref: "TM6202605190108", action: "Software fix verified. System upgrade to EMUI 14.2.0.113 or subsequent versions fully resolves behavior", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "Ana Vodafone workspace crashes instantly post AppGallery deployment cycles", date: "2026-05", ref: "TM202605120198", action: "Isolated to engineering prototypes obtaining internal root privileges. Production build clear", status: "SOLVED" },
-        { model: "Nova 15 Max", issue: "VoWiFi configuration encounters call drops and stability glitches over Vodafone hubs", date: "2026-06", ref: "TM6202606160185", action: "HQ engineering team still testing localized packet drops across Egyptian telecommunications links", status: "PENDING" },
-        { model: "Mate 80 Pro", issue: "4K video streams stutter when utilizing native Huawei Video App pathways", date: "2026-05", ref: "TM6202605210196", action: "VP9 hardware decoding layout codec limit. Optimization coming inside subsequent June 2026 update", status: "SOLVED" },
-        { model: "Mate 80 Pro", issue: "AI Composition positioning lines fail to render on baseline software builds", date: "2026-03", ref: "WeLink Internal", action: "Resolved inside EMUI 15.0.0.141. Detailed support knowledge matrix en-us16087529 distributed", status: "SOLVED" },
-        { model: "Matepad Mini", issue: "PaperMatte display screen glass tracks oils and fingerprint smudges easily", date: "2026-04", ref: "WeLink Shared", action: "Normal design behavior of nano-etched anti-glare coatings. Standard customer script provided", status: "SOLVED" }
+        { model: "Nova 15 Max", issue: "AI Remove option is not found inside the Gallery edit view configurations[cite: 1]", date: "2026-06[cite: 1]", ref: "TM6202606150161[cite: 1]", action: "HQ Still Analyzing the captured software package behavior metrics[cite: 1]", status: "PENDING" },
+        { model: "Nova 15 Max", issue: "Camera screen viewfinder layout flashes aggressively during photo snapshot capture[cite: 1]", date: "2026-05[cite: 1]", ref: "TM202605150178[cite: 1]", action: "HQ Analyzed and released baseline technical knowledge document FAQ en-us16099942[cite: 1]", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Viewfinder lags completely and zoom switching fails after toggling aperture modes[cite: 1]", date: "2026-05[cite: 1]", ref: "TM6202605190108[cite: 1]", action: "HQ verified. System software update EMUI 14.2.0.113 or later completely resolves behavior[cite: 1]", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "Ana Vodafone environment crashes post deployment via AppGallery channels[cite: 1]", date: "2026-05[cite: 1]", ref: "TM202605120198[cite: 1]", action: "Rooted source found: engineering testing sample was active with open superuser privileges[cite: 1]", status: "SOLVED" },
+        { model: "Nova 15 Max", issue: "VoWiFi configuration cuts audio and encounters logging drops over Vodafone links[cite: 1]", date: "2026-06[cite: 1]", ref: "TM6202606160185[cite: 1]", action: "HQ core infrastructure teams still parsing local Egyptian telecommunications nodes[cite: 1]", status: "PENDING" },
+        { model: "Mate 80 Pro", issue: "4K resolution video playback lags and stutters inside native Huawei Video App[cite: 1]", date: "2026-05[cite: 1]", ref: "TM6202605210196[cite: 1]", action: "VP9 decoding codec limit. Optimization coming within scheduled package upgrade June 2026[cite: 1]", status: "SOLVED" },
+        { model: "Mate 80 Pro", issue: "AI Composition baseline framing reference grids do not manifest over camera[cite: 3]", date: "2026-03[cite: 3]", ref: "WeLink Track", action: "Resolved within EMUI 15.0.0.141 patch. Technical brief en-us16087529 distributed[cite: 3]", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Acoustic layout leaks audible noise signals when operating at top 3 volume levels[cite: 2, 3]", date: "2026-03[cite: 2, 3]", ref: "TM202603160216[cite: 2, 3]", action: "Expected threshold trait. Users instructed to scale fit via ear-tip guide en-us15767422[cite: 2, 3]", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Huawei Sound parameters fail to apply when connected to legacy P30 Pro[cite: 2]", date: "2026-04[cite: 2]", ref: "TM202604260121[cite: 2]", action: "HQ engineering team actively debugging acoustic translation profile layers[cite: 2]", status: "PENDING" },
+        { model: "FreeBuds Pro 5", issue: "Personalized prompt creation capabilities completely hidden inside global region[cite: 1]", date: "2026-06[cite: 1]", ref: "TM6202606150132[cite: 1]", action: "Feature limited to China servers. Local technical FAQ support article requested[cite: 1]", status: "SOLVED" },
+        { model: "FreeBuds Pro 5", issue: "Broadcast signaling packets trigger random pairing popup boxes on POCO X3[cite: 1]", date: "2026-06[cite: 1]", ref: "TM6202606150134[cite: 1]", action: "Derived from custom host phone background power rules. Basic operations normal[cite: 1]", status: "SOLVED" },
+        { model: "Matepad Mini", issue: "PaperMatte textured glass panels trap skin oils and fingerprint marks easily[cite: 2, 3]", date: "2026-04[cite: 2, 3]", ref: "WeLink Core", action: "Expected structural trade-off of the micro-nano chemical glass etching configurations[cite: 2, 3]", status: "SOLVED" }
     ];
 
     let activeStateDataset = DEFAULT_CHECKLIST_DATA;
@@ -408,8 +428,8 @@
             document.getElementById('masterAuthShield').style.display = 'none';
             document.getElementById('captureArea').style.visibility = 'visible'; 
             
-            // Rebuild structural HTML frames cleanly on entry launch thread
             fetchCloudState().then(() => {
+                applyHeadlineStateToDOM();
                 rebuildSummaryTableMarkupStructures();
                 renderMatrixDashboardGrid();
                 calculateDynamicKPIs();
@@ -418,6 +438,12 @@
             document.getElementById('authErrorNode').style.display = 'block';
             document.getElementById('masterGateKeyInput').value = '';
         }
+    }
+
+    function applyHeadlineStateToDOM() {
+        document.getElementById('globalMainHeadlineText').innerText = globalHeadlinesDataset.main;
+        document.getElementById('headlineOverviewPanelText').innerText = globalHeadlinesDataset.overview;
+        document.getElementById('headlineIncidentLogText').innerText = globalHeadlinesDataset.log;
     }
 
     function rebuildSummaryTableMarkupStructures() {
@@ -663,7 +689,7 @@
     }
 
     function toggleLiveEditDOMSync(forceStyles = false) {
-        const textElements = document.querySelectorAll('.node-text, .product-title-node');
+        const textElements = document.querySelectorAll('.node-text, .product-title-node, header h1, .section-title span');
         if(editMode || forceStyles) {
             textElements.forEach(el => { el.setAttribute('contenteditable', 'true'); el.onblur = function() { saveDOMChangesToArray(); }; });
             enforceIncidentCellEdits();
@@ -674,6 +700,12 @@
     }
 
     function saveDOMChangesToArray() {
+        // Parse and save edited textual headlines
+        globalHeadlinesDataset.main = document.getElementById('globalMainHeadlineText').innerText.trim();
+        globalHeadlinesDataset.overview = document.getElementById('headlineOverviewPanelText').innerText.trim();
+        globalHeadlinesDataset.log = document.getElementById('headlineIncidentLogText').innerText.trim();
+        localStorage.setItem('operations_headlines_storage', JSON.stringify(globalHeadlinesDataset));
+
         document.querySelectorAll('.product-column').forEach(col => {
             const id = col.getAttribute('data-id');
             if (!activeStateDataset[id]) return;
@@ -696,7 +728,7 @@
         editMode = !editMode;
         const btn = document.getElementById('editModeBtn');
         if(editMode) { btn.textContent = "💾 Lock Admin Layout"; document.body.classList.add('admin-unlocked', 'editable-active'); } 
-        else { saveDOMChangesToArray(); btn.textContent = "🔒 Unlock Admin Edit"; document.body.classList.remove('admin-unlocked', 'editable-active'); }
+        else { saveDOMChangesToArray(); btn.textContent = "🔒 Unlock Admin Edit"; document.body.classList.remove('admin-unlocked', 'editable-active'); rebuildSummaryTableMarkupStructures(); }
         toggleLiveEditDOMSync();
     }
 
@@ -753,6 +785,10 @@
     }
 
     async function fetchCloudState() {
+        // Load custom text headlines from local memory cache blocks if available
+        let cachedHeadlines = localStorage.getItem('operations_headlines_storage');
+        if(cachedHeadlines) globalHeadlinesDataset = JSON.parse(cachedHeadlines);
+
         if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
         try {
             let res = await fetch(CLOUD_DATABASE_URL);
@@ -764,16 +800,6 @@
         } catch(e) { console.log("Cloud Read Error:", e); }
     }
 
-    async function syncCloudChannel(type, payloadData) {
-        if(CLOUD_DATABASE_URL === "PASTE_YOUR_GOOGLE_WEB_APP_URL_HERE") return;
-        try {
-            await fetch(CLOUD_DATABASE_URL, {
-                method: "POST", mode: "no-cors", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ dataType: type, payload: payloadData })
-            });
-        } catch(e) { console.log("Cloud Push Error:", e); }
-    }
-
     function exportToCSVFile() {
         let csv = "Category,Product,Requirement/Item,Status\n";
         incidentLogDataset.forEach(i => { csv += `"Incident Log","${i.model}","${i.issue.replace(/"/g, '""')}","${i.status}"\n`; });
@@ -783,7 +809,7 @@
     function generateComprehensivePresentationDeck() {
         let pptx = new PptxGenJS(); pptx.layout = 'LAYOUT_16x9';
         let slide1 = pptx.addSlide(); slide1.addShape(pptx.ShapeType.rect, { fill: '5c3e35', x: 0, y: 0, w: '100%', h: '100%' });
-        slide1.addText("HUAWEI NEW PRODUCTS EXPERIENCE\nOPERATIONAL QUALITY STRATEGY REVIEW", { x: 0.6, y: 2.2, w: 11, h: 2, fontSize: 28, bold: true, color: 'ffffff' });
+        slide1.addText(`${globalHeadlinesDataset.main.toUpperCase()}`, { x: 0.6, y: 2.2, w: 11, h: 2, fontSize: 26, bold: true, color: 'ffffff' });
         
         let slide2 = pptx.addSlide(); slide2.addText("ANALYTICS PERFORMANCE SUMMARY TIMELINE", { x: 0.5, y: 0.4, w: 10, h: 0.5, fontSize: 18, bold: true, color: '5c3e35' });
         let pptTableRows = [["Product Model", "Captured Technical Quality Issue Description", "Logged", "Reference Ticket", "Resolution Status"]];
